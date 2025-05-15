@@ -67,4 +67,12 @@ RUN apt update
 # This package should be the minimum needed to build and is significantly
 # smaller than the full `rocm` package.
 RUN apt -y install rocm rocm-dev rocwmma-dev
-
+RUN apt -y install clangd ripgrep gdb cmake
+WORKDIR /tmp
+RUN git clone https://github.com/ROCm/rocWMMA.git
+WORKDIR /tmp/rocWMMA
+RUN git switch release/rocm-rel-6.3.0.2
+RUN mkdir build
+WORKDIR /tmp/rocWMMA/build
+RUN cmake -DCMAKE_C_COMPILER=hipcc -DCMAKE_CXX_COMPILER=hipcc -DBUILD_GMOCK=OFF -DGPU_TARGETS=gfx942 -DROCWMMA_BUILD_SAMPLES=OFF -DROCWMMA_BUILD_TESTS=OFF -DROCWMMA_BUILD_VALIDATION_TESTS=ON  ..
+RUN make install
