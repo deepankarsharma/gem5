@@ -76,3 +76,10 @@ RUN mkdir build
 WORKDIR /tmp/rocWMMA/build
 RUN cmake -DCMAKE_C_COMPILER=hipcc -DCMAKE_CXX_COMPILER=hipcc -DBUILD_GMOCK=OFF -DGPU_TARGETS=gfx942 -DROCWMMA_BUILD_SAMPLES=OFF -DROCWMMA_BUILD_TESTS=OFF -DROCWMMA_BUILD_VALIDATION_TESTS=ON  ..
 RUN make install
+
+RUN apt -y install curl
+
+WORKDIR /root
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+RUN /root/.local/bin/uv venv
+RUN . .venv/bin/activate && /root/.local/bin/uv pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.3
